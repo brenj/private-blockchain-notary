@@ -28,10 +28,11 @@ app.post('/requestValidation', (req, res, next) => {
     res.status(400).json(getErrorResponse(noAddressMessage));
     next(`ERROR: ${noAddressMessage}`);
   } else {
+    const requestTimeStamp = moment().unix().toString();
     res.status(200).json({
       address,
-      requestTimeStamp: moment().unix().toString(),
-      message: `${address}:starRegistry`,
+      requestTimeStamp,
+      message: `${address}:${requestTimeStamp}:starRegistry`,
       validationWindow: VALIDATION_WINDOW_SECS,
     });
   }
