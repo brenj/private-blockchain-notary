@@ -1,8 +1,8 @@
 const express = require('express');
-const privateBlockchain = require('private-blockchain');
+const blockchain = require('./blockchain.js');
 
 const app = express();
-const blockchain = new privateBlockchain.Blockchain();
+const starBlockchain = new blockchain();
 
 const EMPTY_HEIGHT = -1;
 const PORT = 8000;
@@ -21,7 +21,7 @@ app.use(express.json());
 app.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
   const requestedHeight = req.params.height;
 
-  blockchain.getLastBlockHeight()
+  starBlockchain.getLastBlockHeight()
     .then((lastBlockHeight) => {
       if (lastBlockHeight === EMPTY_HEIGHT) {
         const emptyBlockchainMessage = 'Blockchain is empty';
@@ -33,7 +33,7 @@ app.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
         res.status(400).json(getErrorResponse(invalidBlockMessage));
         next(`ERROR: ${invalidBlockMessage}`);
       } else {
-        return blockchain.getBlock(requestedHeight)
+        return starBlockchain.getBlock(requestedHeight)
           .then(block => res.status(200).json(getBlockResponse(block)));
       }
     })
@@ -51,7 +51,7 @@ app.post('/block', (req, res, next) => {
     res.status(400).json(getErrorResponse(noBlockDataMessage));
     next(`ERROR: ${noBlockDataMessage}`);
   } else {
-    blockchain.addBlock(body)
+    starBlockchain.addBlock(body)
       .then(block => res.status(201).json(getBlockResponse(block)))
       .catch((error) => {
         res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
