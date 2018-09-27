@@ -2,7 +2,7 @@
   "name": "private-blockchain-notary",
   "version": "1.0.0",
   "description": "A private blockchain star registry notarization service.",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +15,8 @@
     "express",
     "blockchain",
     "udacity",
-    "node"
+    "node",
+    "leveldb"
   ],
   "author": "brenj",
   "license": "ISC",
