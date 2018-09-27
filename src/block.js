@@ -1,3 +1,4 @@
+const moment = require('moment');
 const SHA256 = require('crypto-js/sha256');
 
 class Block {
@@ -6,7 +7,7 @@ class Block {
     this.body = body;
     this.height = height;
     this.previousBlockHash = previousBlockHash;
-    this.time = time || new Date().getTime().toString().slice(0, -3);
+    this.time = time || moment().unix().toString();
     this.hash = hash || '';
   }
 
