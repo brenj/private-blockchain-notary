@@ -1,0 +1,26 @@
+{
+  "name": "private-blockchain-notary",
+  "version": "1.0.0",
+  "description": "A private blockchain star registry notarization service.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brenj/private-blockchain-notary.git"
+  },
+  "keywords": [
+    "javascript",
+    "express",
+    "blockchain",
+    "udacity",
+    "node"
+  ],
+  "author": "brenj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brenj/private-blockchain-notary/issues"
+  },
+  "homepage": "https://github.com/brenj/private-blockchain-notary#readme"
+}
