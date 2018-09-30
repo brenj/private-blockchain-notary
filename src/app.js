@@ -39,6 +39,49 @@ app.post('/requestValidation', (req, res, next) => {
   }
 });
 
+app.post('/message-signature/validate', (req, res, next) => {
+  const { address, signature } = req.body;
+
+  if (!address || !signature) {
+    const missingParametersMessage = 'Required parameters not provided';
+    res.status(400).json(getErrorResponse(missingParametersMessage));
+    next(`ERROR: ${missingParametersMessage}`);
+  }
+
+  starRequestData.getStarRequest(address)
+    .then((data) => {
+      const currentTimestamp = moment().unix();
+      const requestTimestamp = parseInt(data.requestTimestamp, 10);
+      const validationTimeLeft = currentTimestamp - requestTimestamp;
+
+      if (validationTimeLeft <= VALIDATION_WINDOW_SECS) {
+        const message = `${address}:${requestTimestamp}:starRegistry`;
+        const signatureVerified = bitcoinMessage.verify(
+          message, address, signature);
+        const statusCode = signatureVerified ? 200 : 403;
+
+        res.status(statusCode).json({
+          registerStar: signatureVerified,
+          status: {
+            address,
+            requestTimestamp,
+            message,
+            validationWindow: VALIDATION_WINDOW_SECS - validationTimeLeft,
+            messageSignature: signatureVerified ? 'valid' : 'invalid',
+          },
+        });
+      } else {
+        const validationWindowMessage = 'Validation window expired';
+        res.status(400).json(getErrorResponse(validationWindowMessage));
+        next(`ERROR: ${validationWindowMessage}`);
+      }
+    })
+    .catch((error) => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`ERROR: ${error}`);
+    });
+});
+
 // app.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
 //   const requestedHeight = req.params.height;
 
