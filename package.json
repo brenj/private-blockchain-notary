@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/brenj/private-blockchain-notary#readme",
   "dependencies": {
+    "bitcoinjs-lib": "^3.3.2",
+    "bitcoinjs-message": "^2.0.0",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.3",
     "level": "^4.0.0",
