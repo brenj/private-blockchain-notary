@@ -29,13 +29,22 @@ app.post('/requestValidation', (req, res, next) => {
     res.status(400).json(getErrorResponse(noAddressMessage));
     next(`ERROR: ${noAddressMessage}`);
   } else {
-    const requestTimeStamp = moment().unix().toString();
-    res.status(200).json({
-      address,
-      requestTimeStamp,
-      message: `${address}:${requestTimeStamp}:starRegistry`,
-      validationWindow: VALIDATION_WINDOW_SECS,
-    });
+    const requestTimestamp = moment().format('X');
+    const requestData = { requestTimestamp, hasStarRegistered: false };
+
+    starRequestData.addStarRequest(address, requestData)
+      .then(() => {
+        res.status(200).json({
+          address,
+          requestTimestamp,
+          message: `${address}:${requestTimestamp}:starRegistry`,
+          validationWindow: VALIDATION_WINDOW_SECS,
+        });
+      })
+      .catch((error) => {
+        res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+        next(`ERROR: ${error}`);
+      });
   }
 });
 
