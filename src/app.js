@@ -1,3 +1,4 @@
+const bitcoinMessage = require('bitcoinjs-message');
 const express = require('express');
 const moment = require('moment');
 const Blockchain = require('./blockchain.js');
