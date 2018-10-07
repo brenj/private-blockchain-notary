@@ -125,7 +125,9 @@ function getBlockByHash(hash) {
 module.exports = {
   addDataToLevelDB,
   addLevelDBData,
-  getLastBlockHeight,
+  getBlockByHash,
+  getBlocksByAddress,
   getChainData,
+  getLastBlockHeight,
   getLevelDBData,
 };
