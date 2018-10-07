@@ -93,6 +93,30 @@ app.post('/message-signature/validate', (req, res, next) => {
     });
 });
 
+app.post('/block', (req, res, next) => {
+  const { address, star } = req.body;
+
+  if (address === undefined || star === undefined) {
+    res.status(400).json(getErrorResponse('Missing required parameters'));
+    return;
+  }
+
+  if (Buffer.byteLength(star.story, 'ascii') > 500) {
+    res.status(400).json(
+      getErrorResponse('Star story must be 250 words or less'));
+    return;
+  }
+
+  const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
+  star.story = encodedStory;
+  starBlockchain.addBlock({ address, star })
+    .then(block => res.status(201).json(getBlockResponse(block)))
+    .catch((error) => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`ERROR: ${error}`);
+    });
+});
+
 // app.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
 //   const requestedHeight = req.params.height;
 
