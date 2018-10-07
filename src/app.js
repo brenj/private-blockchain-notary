@@ -18,7 +18,7 @@ const getErrorResponse = message => ({ error: true, message });
 
 app.use(express.json());
 
-app.post('/requestValidation', (req, res) => {
+app.post('/requestValidation', (req, res, next) => {
   const { address } = req.body;
 
   if (!address) {
@@ -38,12 +38,13 @@ app.post('/requestValidation', (req, res) => {
         validationWindow: VALIDATION_WINDOW_SECS,
       });
     })
-    .catch(() => {
+    .catch((error) => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`Error: ${error}`);
     });
 });
 
-app.post('/message-signature/validate', (req, res) => {
+app.post('/message-signature/validate', (req, res, next) => {
   const { address, signature } = req.body;
 
   if (!address || !signature) {
@@ -84,12 +85,13 @@ app.post('/message-signature/validate', (req, res) => {
     .then(([data, requestValidated]) => {
       starRequestData.putStarRequest(address, { ...data, requestValidated });
     })
-    .catch(() => {
+    .catch((error) => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`Error: ${error}`);
     });
 });
 
-app.post('/block', (req, res) => {
+app.post('/block', (req, res, next) => {
   const { address, star } = req.body;
 
   if (!address || !star) {
@@ -103,12 +105,27 @@ app.post('/block', (req, res) => {
     return;
   }
 
-  const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
-  star.story = encodedStory;
-  starBlockchain.addBlock({ address, star })
-    .then(block => res.status(201).json(getBlockResponse(block)))
-    .catch(() => {
+  starRequestData.getStarRequest(address)
+    .then((data) => {
+      if (!data.requestValidated) {
+        res.status(403).json(
+          getErrorResponse('Address not validated to register star'));
+        return;
+      }
+
+      const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
+      star.story = encodedStory;
+      starBlockchain.addBlock({ address, star })
+        .then(block => res.status(201).json(getBlockResponse(block)))
+        .catch((error) => {
+          res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+          next(`Error: ${error}`);
+        });
+    })
+    .then(() => starRequestData.deleteStarRequest(address))
+    .catch((error) => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`Error: ${error}`);
     });
 });
 
