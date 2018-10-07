@@ -23,41 +23,40 @@ const convertHeightToInt = (req, res, next) => {
 
 app.use(express.json());
 
-app.post('/requestValidation', (req, res, next) => {
+app.post('/requestValidation', (req, res) => {
   const { address } = req.body;
 
   if (!address) {
-    const noAddressMessage = 'No address provided';
-    res.status(400).json(getErrorResponse(noAddressMessage));
-    next(`ERROR: ${noAddressMessage}`);
-  } else {
-    const requestTimestamp = moment().format('X');
-    const requestData = { requestTimestamp, hasStarRegistered: false };
-
-    starRequestData.addStarRequest(address, requestData)
-      .then(() => {
-        res.status(200).json({
-          address,
-          requestTimestamp,
-          message: `${address}:${requestTimestamp}:starRegistry`,
-          validationWindow: VALIDATION_WINDOW_SECS,
-        });
-      })
-      .catch((error) => {
-        res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-        next(`ERROR: ${error}`);
-      });
+    res.status(400).json(getErrorResponse('No address provided'));
+    return;
   }
+
+  const requestTimestamp = moment().format('X');
+  const requestData = { requestTimestamp, requestValidated: false };
+
+  starRequestData.putStarRequest(address, requestData)
+    .then(() => {
+      res.status(200).json({
+        address,
+        requestTimestamp,
+        message: `${address}:${requestTimestamp}:starRegistry`,
+        validationWindow: VALIDATION_WINDOW_SECS,
+      });
+    })
+    .catch(() => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+    });
 });
 
-app.post('/message-signature/validate', (req, res, next) => {
+app.post('/message-signature/validate', (req, res) => {
   const { address, signature } = req.body;
 
   if (!address || !signature) {
-    const missingParametersMessage = 'Required parameters not provided';
-    res.status(400).json(getErrorResponse(missingParametersMessage));
-    next(`ERROR: ${missingParametersMessage}`);
+    res.status(400).json(getErrorResponse('Missing required parameters'));
+    return;
   }
+
+  let signatureVerified = false;
 
   starRequestData.getStarRequest(address)
     .then((data) => {
@@ -67,7 +66,7 @@ app.post('/message-signature/validate', (req, res, next) => {
 
       if (validationTimeLeft <= VALIDATION_WINDOW_SECS) {
         const message = `${address}:${requestTimestamp}:starRegistry`;
-        const signatureVerified = bitcoinMessage.verify(
+        signatureVerified = bitcoinMessage.verify(
           message, address, signature);
         const statusCode = signatureVerified ? 200 : 403;
 
@@ -82,21 +81,23 @@ app.post('/message-signature/validate', (req, res, next) => {
           },
         });
       } else {
-        const validationWindowMessage = 'Validation window expired';
-        res.status(400).json(getErrorResponse(validationWindowMessage));
-        next(`ERROR: ${validationWindowMessage}`);
+        res.status(400).json(getErrorResponse('Validation window expired'));
       }
+
+      return Promise.all([data, signatureVerified]);
     })
-    .catch((error) => {
+    .then(([data, requestValidated]) => {
+      starRequestData.putStarRequest(address, { ...data, requestValidated });
+    })
+    .catch(() => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`ERROR: ${error}`);
     });
 });
 
-app.post('/block', (req, res, next) => {
+app.post('/block', (req, res) => {
   const { address, star } = req.body;
 
-  if (address === undefined || star === undefined) {
+  if (!address || !star) {
     res.status(400).json(getErrorResponse('Missing required parameters'));
     return;
   }
@@ -111,9 +112,8 @@ app.post('/block', (req, res, next) => {
   star.story = encodedStory;
   starBlockchain.addBlock({ address, star })
     .then(block => res.status(201).json(getBlockResponse(block)))
-    .catch((error) => {
+    .catch(() => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`ERROR: ${error}`);
     });
 });
 
