@@ -151,4 +151,30 @@ app.get('/stars/address::address', (req, res, next) => {
       next(`Error: ${error}`);
     });
 });
+
+app.get('/stars/hash::hash', (req, res, next) => {
+  const { hash } = req.params;
+
+  blockchainData.getBlockByHash(hash)
+    .then((block) => {
+      // Block was not found
+      if (!('body' in block)) {
+        res.status(200).json({});
+        return;
+      }
+
+      // Decode star story
+      const decodedStory = Buffer.from(
+        block.body.star.story, 'hex').toString();
+      const decodedBlock = block;
+      decodedBlock.body.star.story = decodedStory;
+
+      res.status(200).json(decodedBlock);
+    })
+    .catch((error) => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`Error: ${error}`);
+    });
+});
+
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
