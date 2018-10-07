@@ -98,6 +98,30 @@ function getBlocksByAddress(address) {
       });
   });
 }
+
+function getBlockByHash(hash) {
+  let blockFound = false;
+
+  return new Promise((resolve, reject) => {
+    db.createValueStream()
+      .on('data', (blockData) => {
+        const block = JSON.parse(blockData);
+        if (block.hash === hash) {
+          blockFound = true;
+          resolve(block);
+        }
+      })
+      .on('error', (error) => {
+        reject(error);
+      })
+      .on('close', () => {
+        if (!blockFound) {
+          resolve({});
+        }
+      });
+  });
+}
+
 module.exports = {
   addDataToLevelDB,
   addLevelDBData,
