@@ -27,11 +27,23 @@ function getStarRequest(key) {
   });
 }
 
+function deleteStarRequest(key) {
+  return new Promise((resolve, reject) => {
+    db.del(key, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 function getChainData() {
   return new Promise((resolve, reject) => {
     db.createReadStream()
       .on('data', (data) => {
-        console.log(data.key, '=', data.value)
+        console.log(data.key, '=', data.value);
       })
       .on('error', (error) => {
         reject(error);
@@ -47,6 +59,7 @@ module.exports = {
   getStarRequest,
 };
 
-// console.log(putStarRequest('12345', {hasStarRegistered: false, validationRequestTimestamp: '99999999999'}));
+// putStarRequest('12345', {test: 'data'});
 // getStarRequest('12345').then((value) => console.log(value));
-getChainData().then(() => console.log('done'))
+// deleteStarRequest('12345');
+// getChainData().then(() => console.log('done'))
