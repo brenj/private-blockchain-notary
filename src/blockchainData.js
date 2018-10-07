@@ -79,6 +79,25 @@ function getChainData() {
   });
 }
 
+function getBlocksByAddress(address) {
+  const blocks = [];
+
+  return new Promise((resolve, reject) => {
+    db.createValueStream()
+      .on('data', (blockData) => {
+        const block = JSON.parse(blockData);
+        if (block.body.address === address) {
+          blocks.push(block);
+        }
+      })
+      .on('error', (error) => {
+        reject(error);
+      })
+      .on('close', () => {
+        resolve(blocks);
+      });
+  });
+}
 module.exports = {
   addDataToLevelDB,
   addLevelDBData,
