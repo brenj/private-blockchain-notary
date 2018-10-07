@@ -130,4 +130,25 @@ app.post('/block', (req, res, next) => {
     });
 });
 
+app.get('/stars/address::address', (req, res, next) => {
+  const { address } = req.params;
+
+  blockchainData.getBlocksByAddress(address)
+    .then((blocks) => {
+      // Decode star story
+      const decodedBlocks = blocks.map((block) => {
+        const updatedBlock = block;
+        const decodedStory = Buffer.from(
+          block.body.star.story, 'hex').toString();
+        updatedBlock.body.star.story = decodedStory;
+        return updatedBlock;
+      });
+
+      res.status(200).json(decodedBlocks);
+    })
+    .catch((error) => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`Error: ${error}`);
+    });
+});
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
