@@ -3,7 +3,7 @@ const level = require('level');
 const dbPath = './star-requests.db';
 const db = level(dbPath);
 
-function addStarRequest(key, value) {
+function putStarRequest(key, value) {
   return new Promise((resolve, reject) => {
     db.put(key, JSON.stringify(value), (error) => {
       if (error) {
@@ -43,10 +43,10 @@ function getChainData() {
 }
 
 module.exports = {
-  addStarRequest,
+  putStarRequest,
   getStarRequest,
 };
 
-// console.log(addStarRequest('12345', {hasStarRegistered: false, validationRequestTimestamp: '99999999999'}));
+// console.log(putStarRequest('12345', {hasStarRegistered: false, validationRequestTimestamp: '99999999999'}));
 // getStarRequest('12345').then((value) => console.log(value));
-// getChainData().then(values => console.log('done'))
+getChainData().then(() => console.log('done'))
