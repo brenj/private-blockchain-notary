@@ -55,8 +55,9 @@ function getChainData() {
 }
 
 module.exports = {
-  putStarRequest,
   getStarRequest,
+  putStarRequest,
+  deleteStarRequest,
 };
 
 // putStarRequest('12345', {test: 'data'});
