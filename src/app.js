@@ -8,9 +8,10 @@ const starRequestData = require('./starRequestData.js');
 const app = express();
 const starBlockchain = new Blockchain();
 
+const MAX_STORY_LENGTH = 500; // bytes
 const PORT = 8000;
-const VALIDATION_WINDOW_SECS = 300;
 const UNKNOWN_ERROR_MSG = 'Something bad happened ಥ_ಥ, see server logs';
+const VALIDATION_WINDOW_SECS = 300;
 
 const getBlockResponse = block => ({ error: false, block });
 const getErrorResponse = message => ({ error: true, message });
@@ -96,7 +97,7 @@ app.post('/block', (req, res) => {
     return;
   }
 
-  if (Buffer.byteLength(star.story, 'ascii') > 500) {
+  if (Buffer.byteLength(star.story, 'ascii') > MAX_STORY_LENGTH) {
     res.status(400).json(
       getErrorResponse('Star story must be 250 words or less'));
     return;
