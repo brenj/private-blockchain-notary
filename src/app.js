@@ -3,6 +3,7 @@ const express = require('express');
 const moment = require('moment');
 
 const Blockchain = require('./blockchain.js');
+const blockchainData = require('./blockchainData.js');
 const starRequestData = require('./starRequestData.js');
 
 const app = express();
