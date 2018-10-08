@@ -13,7 +13,7 @@ Supporting courses:
 Endpoints
 ---------
 
-#### Request Validation - initiates a request for validation.
+## Request Validation - initiates a request for validation.
 * __URL__: `/requestValidation`
 * __Method__: `POST`
 * __Required Parameters__
@@ -33,7 +33,7 @@ Endpoints
   * _Codes_: `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
-#### Validate Signature - validates a signed message within a validation window.
+## Validate Signature - validates a signed message within a validation window.
 * __URL__: `/message-signature/validate`
 * __Method__: `POST`
 * __Required Parameters__
@@ -62,7 +62,7 @@ Endpoints
   * _Codes_: `400`, `403`, `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
-#### Register Star - registers a new star in the blockchain containing specified data.
+## Register Star - registers a new star in the blockchain containing specified data.
 * __URL__: `/block`
 * __Method__: `POST`
 * __Required Parameters__
