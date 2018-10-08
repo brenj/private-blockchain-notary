@@ -19,6 +19,17 @@ const GENESIS_BLOCK = {
 class Blockchain {
   constructor() {
     this.api = blockchainData;
+
+    // Create genesis block if it doesn't exist
+    this.getLastBlockHeight().then((height) => {
+      if (height === -1) {
+        this.api.addDataToLevelDB(JSON.stringify(GENESIS_BLOCK))
+          .catch((error) => {
+            console.log(`ERROR: Failed to create genesis block: ${error}`);
+            process.exit(1);
+          });
+      }
+    });
   }
 
   addBlock(blockData) {
