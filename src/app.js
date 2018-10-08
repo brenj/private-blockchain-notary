@@ -17,6 +17,11 @@ const VALIDATION_WINDOW_SECS = 300;
 const getBlockResponse = block => ({ error: false, block });
 const getErrorResponse = message => ({ error: true, message });
 
+const convertHeightToInt = (req, res, next) => {
+  req.params.height = parseInt(req.params.height, 10);
+  next();
+};
+
 app.use(express.json());
 
 app.post('/requestValidation', (req, res, next) => {
@@ -174,6 +179,33 @@ app.get('/stars/hash::hash', (req, res, next) => {
     .catch((error) => {
       res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
       next(`Error: ${error}`);
+    });
+});
+
+app.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
+  const requestedHeight = req.params.height;
+
+  starBlockchain.getLastBlockHeight()
+    .then((lastBlockHeight) => {
+      if (requestedHeight < 0 || requestedHeight > lastBlockHeight) {
+        res.status(400).json(getErrorResponse(
+          `Invalid block (${requestedHeight}) requested`));
+        return;
+      }
+
+      starBlockchain.getBlock(requestedHeight)
+        .then((block) => {
+          const decodedStory = Buffer.from(
+            block.body.star.story, 'hex').toString();
+          const decodedBlock = block;
+          decodedBlock.body.star.story = decodedStory;
+
+          res.status(200).json(getBlockResponse(decodedBlock));
+        });
+    })
+    .catch((error) => {
+      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
+      next(`ERROR: ${error}`);
     });
 });
 
