@@ -102,6 +102,93 @@ Endpoints
   * _Codes_: `400`, `403`, `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
+## Lookup Star (Address) - lookup star by wallet address.
+* __URL__: `stars/address:[ADDRESS]`
+* __Method__: `GET`
+* __Required Parameters__
+  * `ADDRESS=[string]`
+* __Success Response__
+  * _Code_: `200`
+  * _Example Content_
+  ```javascript
+  [
+    {
+        "body": {
+            "address": "19AAjaTUbRjQCMuVczepkoPswiZRhjtg31",
+            "star": {
+                "dec": "-26 29 24.9",
+                "ra": "16h 29m 1.0s",
+                "story": "Found star using https://www.google.com/sky/"
+            }
+        },
+        "height": 1,
+        "previousBlockHash": "2736058a41afbb4c36ed579ec80ba52399a348603cd1d01f4cf26db03ff7186c",
+        "time": "1538942458",
+        "hash": "40c5a1115dcd6e7733271a50d9a167d80ea541af4cf349e9dcfcec1518d5cad7"
+    },
+    ...
+  ]
+  ```
+* __Error Response__
+  * _Codes_: `500`
+  * _Example Content_: `{ "error": true, message: "Something bad happened ಥ_ಥ" }`
+  
+## Lookup Star (Hash) - lookup a star by its block hash.
+* __URL__: `stars/hash:[HASH]`
+* __Method__: `GET`
+* __Required Parameters__
+  * `HASH=[string]`
+* __Success Response__
+  * _Code_: `200`
+  * _Example Content_
+  ```javascript
+  {
+    "body": {
+        "address": "19AAjaTUbRjQCMuVczepkoPswiZRhjtg31",
+        "star": {
+            "dec": "-26° 29' 24.9",
+            "ra": "16h 29m 1.0s",
+            "story": "Genesis Block"
+        }
+    },
+    "height": 0,
+    "previousBlockHash": "",
+    "time": "1539023948",
+    "hash": "cf0d39b631ecfde41feb7599ef06fbbffe47197eaff949547698d8ef04af9b6d"
+  }
+  ```
+* __Error Response__
+  * _Codes_: `500`
+  * _Example Content_: `{ "error": true, message: "Something bad happened ಥ_ಥ" }`
+  
+## Lookup Star (Height) - look up a star in the blockchain for a specified height.
+* __URL__: `/block/[HEIGHT]`
+* __Method__: `GET`
+* __Required Parameters__
+  * `HEIGHT=[integer]`
+* __Success Response__
+  * _Code_: `200`
+  * _Example Content_
+  ```javascript
+  {
+    "body": {
+        "address": "19AAjaTUbRjQCMuVczepkoPswiZRhjtg31",
+        "star": {
+            "dec": "-26° 29' 24.9",
+            "ra": "16h 29m 1.0s",
+            "story": "Genesis Block"
+        }
+    },
+    "height": 0,
+    "previousBlockHash": "",
+    "time": "1539023948",
+    "hash": "cf0d39b631ecfde41feb7599ef06fbbffe47197eaff949547698d8ef04af9b6d"
+  }
+  ```
+* __Error Response__
+  * _Codes_: `400`, `500`
+  * _Example Content_: `{ "error": true, message: "Something bad happened ಥ_ಥ" }`
+
 Requirements
 ------------
 * Node
