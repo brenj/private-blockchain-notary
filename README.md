@@ -13,7 +13,7 @@ Supporting courses:
 Notes
 -----
 
-This project uses express to provide an API to register stars in the universe. To register a star, a user must first prove ownership of a wallet address by going through a timed handshake with the server using:
+This project uses `express` to provide an API to register stars in the universe. To register a star, a user must first prove ownership of a wallet address by going through a timed handshake with the server using:
 
 1. The `/requestValidation` endpoint to initiate validation. This endpoint provides the user with a message to sign and a validation window to complete the validation process within (default: 5 minutes).
 2. The `/message-signature/validate` endpoint to complete validation by providing the signed message within the 5 minute window. See [test/generate-signature.js](https://github.com/brenj/private-blockchain-notary/blob/master/test/generate-signature.js) to sign a message manually for testing purposes.
