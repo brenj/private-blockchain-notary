@@ -1,6 +1,6 @@
 const level = require('level');
 
-const dbPath = './chaindata';
+const dbPath = './chain-data.db';
 const db = level(dbPath);
 
 function addLevelDBData(key, value) {
