@@ -13,7 +13,7 @@ Supporting courses:
 Endpoints
 ---------
 
-## Request Validation - initiates a request for validation.
+## Request Validation - initiates a request for validation
 * __URL__: `/requestValidation`
 * __Method__: `POST`
 * __Required Parameters__
@@ -33,7 +33,7 @@ Endpoints
   * _Codes_: `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
-## Validate Signature - validates a signed message within a validation window.
+## Validate Signature - validates a signed message within a validation window
 * __URL__: `/message-signature/validate`
 * __Method__: `POST`
 * __Required Parameters__
@@ -62,7 +62,7 @@ Endpoints
   * _Codes_: `400`, `403`, `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
-## Register Star - registers a new star in the blockchain containing specified data.
+## Register Star - registers a new star in the blockchain containing specified data
 * __URL__: `/block`
 * __Method__: `POST`
 * __Required Parameters__
@@ -81,28 +81,25 @@ Endpoints
   * _Example Content_:
   ```javascript
   {
-    "error": false,
-    "block": {
-        "body": {
-            "address": "19AAjaTUbRjQCMuVczepkoPswiZRhjtg31",
-            "star": {
-                "dec": "-26° 29' 24.9",
-                "ra": "16h 29m 1.0s",
-                "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f"
-            }
-        },
-        "height": 1,
-        "previousBlockHash": "cf0d39b631ecfde41feb7599ef06fbbffe47197eaff949547698d8ef04af9b6d",
-        "time": "1539024653",
-        "hash": "93b81914d53bf079c31923851b17108506c19160f208f9d0a463420a37ce8acf"
+    "body": {
+        "address": "19AAjaTUbRjQCMuVczepkoPswiZRhjtg31",
+        "star": 
+        "dec": "-26° 29' 24.9"
+            "ra": "16h 29m 1.0s",
+            "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f"
+        }
     }
+    "height": 1,
+    "previousBlockHash": "cf0d39b631ecfde41feb7599ef06fbbffe47197eaff949547698d8ef04af9b6d",
+    "time": "1539024653
+    "hash": "93b81914d53bf079c31923851b17108506c19160f208f9d0a463420a37ce8acf"
   }
   ```
 * __Error Response__
   * _Codes_: `400`, `403`, `500`
   * _Example Content_: `{ "error:" true, message: "Something bad happened ಥ_ಥ" }`
 
-## Lookup Star (Address) - lookup star by wallet address.
+## Lookup Star (Address) - lookup star by wallet address
 * __URL__: `stars/address:[ADDRESS]`
 * __Method__: `GET`
 * __Required Parameters__
@@ -133,7 +130,7 @@ Endpoints
   * _Codes_: `500`
   * _Example Content_: `{ "error": true, message: "Something bad happened ಥ_ಥ" }`
   
-## Lookup Star (Hash) - lookup a star by its block hash.
+## Lookup Star (Hash) - lookup a star by its block hash
 * __URL__: `stars/hash:[HASH]`
 * __Method__: `GET`
 * __Required Parameters__
@@ -161,7 +158,7 @@ Endpoints
   * _Codes_: `500`
   * _Example Content_: `{ "error": true, message: "Something bad happened ಥ_ಥ" }`
   
-## Lookup Star (Height) - look up a star in the blockchain for a specified height.
+## Lookup Star (Height) - look up a star in the blockchain for a specified height
 * __URL__: `/block/[HEIGHT]`
 * __Method__: `GET`
 * __Required Parameters__
