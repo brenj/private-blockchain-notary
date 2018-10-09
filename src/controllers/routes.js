@@ -2,6 +2,7 @@ const bitcoinMessage = require('bitcoinjs-message');
 const express = require('express');
 const moment = require('moment');
 
+const config = require('../../config.js');
 const Blockchain = require('../models/blockchain.js');
 const helpers = require('../helpers');
 const middlewares = require('../middlewares');
@@ -9,9 +10,6 @@ const starRequestData = require('../models/starRequestData.js');
 
 const router = express.Router();
 const starBlockchain = new Blockchain();
-
-const MAX_STORY_LENGTH = 500; // bytes
-const VALIDATION_WINDOW_SECS = 300;
 
 router.post('/requestValidation', (req, res, next) => {
   const { address } = req.body;
@@ -30,7 +28,7 @@ router.post('/requestValidation', (req, res, next) => {
         address,
         requestTimestamp,
         message: `${address}:${requestTimestamp}:starRegistry`,
-        validationWindow: VALIDATION_WINDOW_SECS,
+        validationWindow: config.VALIDATION_WINDOW_SECS,
       });
     })
     .catch(error => next(`Error: ${error}`));
@@ -53,7 +51,7 @@ router.post('/message-signature/validate', (req, res, next) => {
       const requestTimestamp = parseInt(data.requestTimestamp, 10);
       const validationTimeLeft = currentTimestamp - requestTimestamp;
 
-      if (validationTimeLeft <= VALIDATION_WINDOW_SECS) {
+      if (validationTimeLeft <= config.VALIDATION_WINDOW_SECS) {
         const message = `${address}:${requestTimestamp}:starRegistry`;
         signatureVerified = bitcoinMessage.verify(
           message, address, signature);
@@ -65,7 +63,8 @@ router.post('/message-signature/validate', (req, res, next) => {
             address,
             requestTimestamp,
             message,
-            validationWindow: VALIDATION_WINDOW_SECS - validationTimeLeft,
+            validationWindow: (
+              config.VALIDATION_WINDOW_SECS - validationTimeLeft),
             messageSignature: signatureVerified ? 'valid' : 'invalid',
           },
         });
@@ -91,7 +90,7 @@ router.post('/block', (req, res, next) => {
     return;
   }
 
-  if (Buffer.byteLength(star.story, 'ascii') > MAX_STORY_LENGTH) {
+  if (Buffer.byteLength(star.story, 'ascii') > config.MAX_STORY_LENGTH) {
     res.status(400).json(
       helpers.getErrorResponse('Star story must be 250 words or less'));
     return;

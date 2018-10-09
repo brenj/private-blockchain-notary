@@ -1,10 +1,10 @@
 const level = require('level');
 const moment = require('moment');
 
+const config = require('../../config.js');
+
 const dbPath = './star-requests.db';
 const db = level(dbPath);
-
-const VALIDATION_WINDOW_SECS = 300;
 
 function putStarRequest(key, value) {
   return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ function getExpiredRequests() {
           const requestTimestamp = parseInt(starRequest.requestTimestamp, 10);
           const validationTimeLeft = currentTimestamp - requestTimestamp;
 
-          if (validationTimeLeft > VALIDATION_WINDOW_SECS) {
+          if (validationTimeLeft > config.VALIDATION_WINDOW_SECS) {
             expiredRequests.push(data.key);
           }
         }
