@@ -3,6 +3,7 @@ const express = require('express');
 const moment = require('moment');
 
 const Blockchain = require('../models/blockchain.js');
+const mw = require('../middlewares');
 const starRequestData = require('../models/starRequestData.js');
 
 const router = express.Router();
@@ -14,11 +15,6 @@ const VALIDATION_WINDOW_SECS = 300;
 
 const getBlockResponse = block => ({ error: false, block });
 const getErrorResponse = message => ({ error: true, message });
-
-const convertHeightToInt = (req, res, next) => {
-  req.params.height = parseInt(req.params.height, 10);
-  next();
-};
 
 router.post('/requestValidation', (req, res, next) => {
   const { address } = req.body;
@@ -131,7 +127,7 @@ router.post('/block', (req, res, next) => {
     });
 });
 
-router.get('/block/:height(\\d+)', convertHeightToInt, (req, res, next) => {
+router.get('/block/:height(\\d+)', mw.heightToInt, (req, res, next) => {
   const requestedHeight = req.params.height;
 
   starBlockchain.getLastBlockHeight()
