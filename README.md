@@ -200,8 +200,26 @@ Code Quality
 ------------
 This codebase adheres to the [Airbnb JavaScript/React/JSX Style Guide](https://github.com/airbnb/javascript)
 
-Code Organization
------------------
+Code Organization (src)
+-----------------------
+```console
+├── app.js
+├── controllers
+│   ├── index.js
+│   ├── routes.js
+│   └── stars.js
+├── helpers
+│   └── index.js
+├── middlewares
+│   └── index.js
+└── models
+    ├── block.js
+    ├── blockchain.js
+    ├── blockchainData.js
+    └── starRequestData.js
+
+4 directories, 10 files
+```
 
 Grading (by Udacity)
 --------------------
