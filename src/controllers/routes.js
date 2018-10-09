@@ -107,7 +107,7 @@ router.post('/block', (req, res, next) => {
       const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
       star.story = encodedStory;
       starBlockchain.addBlock({ address, star })
-        .then(block => res.status(201).json({ block }))
+        .then(block => res.status(201).json(block))
         .catch(error => next(`Error: ${error}`));
     })
     .then(() => starRequestData.deleteStarRequest(address))
@@ -131,7 +131,7 @@ router.get('/block/:height(\\d+)', middlewares.heightToInt, (req, res, next) => 
           decodedBlock.body.star.story = helpers.dehexify(
             block.body.star.story);
 
-          res.status(200).json({ block: decodedBlock });
+          res.status(200).json(decodedBlock);
         });
     })
     .catch(error => next(`ERROR: ${error}`));
