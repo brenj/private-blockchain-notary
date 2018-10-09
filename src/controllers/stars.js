@@ -1,6 +1,7 @@
 const express = require('express');
 
 const blockchainData = require('../models/blockchainData.js');
+const helpers = require('../helpers');
 
 const router = express.Router();
 
@@ -12,9 +13,8 @@ router.get('/address::address', (req, res, next) => {
       // Decode star story
       const decodedBlocks = blocks.map((block) => {
         const updatedBlock = block;
-        const decodedStory = Buffer.from(
-          block.body.star.story, 'hex').toString();
-        updatedBlock.body.star.story = decodedStory;
+        updatedBlock.body.star.story = helpers.dehexify(
+          block.body.star.story);
         return updatedBlock;
       });
 
@@ -35,10 +35,8 @@ router.get('/hash::hash', (req, res, next) => {
       }
 
       // Decode star story
-      const decodedStory = Buffer.from(
-        block.body.star.story, 'hex').toString();
       const decodedBlock = block;
-      decodedBlock.body.star.story = decodedStory;
+      decodedBlock.body.star.story = helpers.dehexify(block.body.star.story);
 
       res.status(200).json(decodedBlock);
     })

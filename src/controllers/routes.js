@@ -3,6 +3,7 @@ const express = require('express');
 const moment = require('moment');
 
 const Blockchain = require('../models/blockchain.js');
+const helpers = require('../helpers');
 const middlewares = require('../middlewares');
 const starRequestData = require('../models/starRequestData.js');
 
@@ -12,13 +13,11 @@ const starBlockchain = new Blockchain();
 const MAX_STORY_LENGTH = 500; // bytes
 const VALIDATION_WINDOW_SECS = 300;
 
-const getErrorResponse = message => ({ error: true, message });
-
 router.post('/requestValidation', (req, res, next) => {
   const { address } = req.body;
 
   if (!address) {
-    res.status(400).json(getErrorResponse('No address provided'));
+    res.status(400).json(helpers.getErrorResponse('No address provided'));
     return;
   }
 
@@ -41,7 +40,8 @@ router.post('/message-signature/validate', (req, res, next) => {
   const { address, signature } = req.body;
 
   if (!address || !signature) {
-    res.status(400).json(getErrorResponse('Missing required parameters'));
+    res.status(400).json(helpers.getErrorResponse(
+      'Missing required parameters'));
     return;
   }
 
@@ -70,7 +70,8 @@ router.post('/message-signature/validate', (req, res, next) => {
           },
         });
       } else {
-        res.status(400).json(getErrorResponse('Validation window expired'));
+        res.status(400).json(helpers.getErrorResponse(
+          'Validation window expired'));
       }
 
       return Promise.all([data, signatureVerified]);
@@ -85,23 +86,24 @@ router.post('/block', (req, res, next) => {
   const { address, star } = req.body;
 
   if (!address || !star) {
-    res.status(400).json(getErrorResponse('Missing required parameters'));
+    res.status(400).json(helpers.getErrorResponse(
+      'Missing required parameters'));
     return;
   }
 
   if (Buffer.byteLength(star.story, 'ascii') > MAX_STORY_LENGTH) {
     res.status(400).json(
-      getErrorResponse('Star story must be 250 words or less'));
+      helpers.getErrorResponse('Star story must be 250 words or less'));
     return;
   }
 
   starRequestData.getStarRequest(address)
     .then((data) => {
-      // if (!data.requestValidated) {
-      //   res.status(403).json(
-      //     getErrorResponse('Address not validated to register star'));
-      //   return;
-      // }
+      if (!data.requestValidated) {
+        res.status(403).json(
+          helpers.getErrorResponse('Address not validated to register star'));
+        return;
+      }
 
       const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
       star.story = encodedStory;
@@ -119,17 +121,16 @@ router.get('/block/:height(\\d+)', middlewares.heightToInt, (req, res, next) => 
   starBlockchain.getLastBlockHeight()
     .then((lastBlockHeight) => {
       if (requestedHeight < 0 || requestedHeight > lastBlockHeight) {
-        res.status(400).json(getErrorResponse(
+        res.status(400).json(helpers.getErrorResponse(
           `Invalid block (${requestedHeight}) requested`));
         return;
       }
 
       starBlockchain.getBlock(requestedHeight)
         .then((block) => {
-          const decodedStory = Buffer.from(
-            block.body.star.story, 'hex').toString();
           const decodedBlock = block;
-          decodedBlock.body.star.story = decodedStory;
+          decodedBlock.body.star.story = helpers.dehexify(
+            block.body.star.story);
 
           res.status(200).json({ block: decodedBlock });
         });
