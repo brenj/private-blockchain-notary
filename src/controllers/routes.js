@@ -12,7 +12,6 @@ const starBlockchain = new Blockchain();
 const MAX_STORY_LENGTH = 500; // bytes
 const VALIDATION_WINDOW_SECS = 300;
 
-const getBlockResponse = block => ({ error: false, block });
 const getErrorResponse = message => ({ error: true, message });
 
 router.post('/requestValidation', (req, res, next) => {
@@ -107,7 +106,7 @@ router.post('/block', (req, res, next) => {
       const encodedStory = Buffer.from(star.story, 'ascii').toString('hex');
       star.story = encodedStory;
       starBlockchain.addBlock({ address, star })
-        .then(block => res.status(201).json(getBlockResponse(block)))
+        .then(block => res.status(201).json({ block }))
         .catch(error => next(`Error: ${error}`));
     })
     .then(() => starRequestData.deleteStarRequest(address))
@@ -132,7 +131,7 @@ router.get('/block/:height(\\d+)', middlewares.heightToInt, (req, res, next) => 
           const decodedBlock = block;
           decodedBlock.body.star.story = decodedStory;
 
-          res.status(200).json(getBlockResponse(decodedBlock));
+          res.status(200).json({ block: decodedBlock });
         });
     })
     .catch(error => next(`ERROR: ${error}`));
