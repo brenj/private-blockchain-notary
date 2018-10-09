@@ -1,7 +1,10 @@
 const level = require('level');
+const moment = require('moment');
 
 const dbPath = './star-requests.db';
 const db = level(dbPath);
+
+const VALIDATION_WINDOW_SECS = 300;
 
 function putStarRequest(key, value) {
   return new Promise((resolve, reject) => {
@@ -39,6 +42,42 @@ function deleteStarRequest(key) {
   });
 }
 
+function getExpiredRequests() {
+  const expiredRequests = [];
+
+  return new Promise((resolve, reject) => {
+    db.createReadStream()
+      .on('data', (data) => {
+        const starRequest = JSON.parse(data.value);
+
+        if (!starRequest.requestValidated) {
+          const currentTimestamp = moment().unix();
+          const requestTimestamp = parseInt(starRequest.requestTimestamp, 10);
+          const validationTimeLeft = currentTimestamp - requestTimestamp;
+
+          if (validationTimeLeft > VALIDATION_WINDOW_SECS) {
+            expiredRequests.push(data.key);
+          }
+        }
+      })
+      .on('error', (error) => {
+        reject(error);
+      })
+      .on('close', () => {
+        resolve(expiredRequests);
+      });
+  });
+}
+
+function pruneExpiredRequests() {
+  getExpiredRequests()
+    .then((expiredRequests) => {
+      const operations = expiredRequests.map(expiredRequest => (
+        { type: 'del', key: expiredRequest }));
+      db.batch(operations);
+    });
+}
+
 function getChainData() {
   return new Promise((resolve, reject) => {
     db.createReadStream()
@@ -56,6 +95,7 @@ function getChainData() {
 
 module.exports = {
   getStarRequest,
+  pruneExpiredRequests,
   putStarRequest,
   deleteStarRequest,
 };
@@ -64,3 +104,4 @@ module.exports = {
 // getStarRequest('12345').then((value) => console.log(value));
 // deleteStarRequest('12345');
 // getChainData().then(() => console.log('done'))
+// getExpiredStarRequests().then((expiredRequests) => console.log(expiredRequests))
