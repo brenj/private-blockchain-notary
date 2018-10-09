@@ -78,30 +78,9 @@ function pruneExpiredRequests() {
     });
 }
 
-function getChainData() {
-  return new Promise((resolve, reject) => {
-    db.createReadStream()
-      .on('data', (data) => {
-        console.log(data.key, '=', data.value);
-      })
-      .on('error', (error) => {
-        reject(error);
-      })
-      .on('close', () => {
-        resolve();
-      });
-  });
-}
-
 module.exports = {
   getStarRequest,
   pruneExpiredRequests,
   putStarRequest,
   deleteStarRequest,
 };
-
-// putStarRequest('12345', {test: 'data'});
-// getStarRequest('12345').then((value) => console.log(value));
-// deleteStarRequest('12345');
-// getChainData().then(() => console.log('done'))
-// getExpiredStarRequests().then((expiredRequests) => console.log(expiredRequests))
