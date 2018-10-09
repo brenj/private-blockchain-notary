@@ -91,7 +91,7 @@ Endpoints
     }
     "height": 1,
     "previousBlockHash": "cf0d39b631ecfde41feb7599ef06fbbffe47197eaff949547698d8ef04af9b6d",
-    "time": "1539024653
+    "time": "1539024653"
     "hash": "93b81914d53bf079c31923851b17108506c19160f208f9d0a463420a37ce8acf"
   }
   ```
