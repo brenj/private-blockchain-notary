@@ -194,7 +194,7 @@ Requirements
 Install & Run
 -------------
 1. `npm install`
-2. `node src/app.js`
+2. `npm start`
 
 Code Quality
 ------------
