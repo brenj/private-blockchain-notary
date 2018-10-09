@@ -2,8 +2,8 @@ const bitcoinMessage = require('bitcoinjs-message');
 const express = require('express');
 const moment = require('moment');
 
-const Blockchain = require('../blockchain.js');
-const starRequestData = require('../starRequestData.js');
+const Blockchain = require('../models/blockchain.js');
+const starRequestData = require('../models/starRequestData.js');
 
 const router = express.Router();
 const starBlockchain = new Blockchain();

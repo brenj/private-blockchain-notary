@@ -1,6 +1,6 @@
 const express = require('express');
 
-const blockchainData = require('../blockchainData.js');
+const blockchainData = require('../models/blockchainData.js');
 
 const router = express.Router();
 const getErrorResponse = message => ({ error: true, message });
