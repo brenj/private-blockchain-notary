@@ -3,14 +3,13 @@ const express = require('express');
 const moment = require('moment');
 
 const Blockchain = require('../models/blockchain.js');
-const mw = require('../middlewares');
+const middlewares = require('../middlewares');
 const starRequestData = require('../models/starRequestData.js');
 
 const router = express.Router();
 const starBlockchain = new Blockchain();
 
 const MAX_STORY_LENGTH = 500; // bytes
-const UNKNOWN_ERROR_MSG = 'Something bad happened ಥ_ಥ, see server logs';
 const VALIDATION_WINDOW_SECS = 300;
 
 const getBlockResponse = block => ({ error: false, block });
@@ -36,10 +35,7 @@ router.post('/requestValidation', (req, res, next) => {
         validationWindow: VALIDATION_WINDOW_SECS,
       });
     })
-    .catch((error) => {
-      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`Error: ${error}`);
-    });
+    .catch(error => next(`Error: ${error}`));
 });
 
 router.post('/message-signature/validate', (req, res, next) => {
@@ -83,10 +79,7 @@ router.post('/message-signature/validate', (req, res, next) => {
     .then(([data, requestValidated]) => {
       starRequestData.putStarRequest(address, { ...data, requestValidated });
     })
-    .catch((error) => {
-      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`Error: ${error}`);
-    });
+    .catch(error => next(`Error: ${error}`));
 });
 
 router.post('/block', (req, res, next) => {
@@ -115,19 +108,13 @@ router.post('/block', (req, res, next) => {
       star.story = encodedStory;
       starBlockchain.addBlock({ address, star })
         .then(block => res.status(201).json(getBlockResponse(block)))
-        .catch((error) => {
-          res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-          next(`Error: ${error}`);
-        });
+        .catch(error => next(`Error: ${error}`));
     })
     .then(() => starRequestData.deleteStarRequest(address))
-    .catch((error) => {
-      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`Error: ${error}`);
-    });
+    .catch(error => next(`Error: ${error}`));
 });
 
-router.get('/block/:height(\\d+)', mw.heightToInt, (req, res, next) => {
+router.get('/block/:height(\\d+)', middlewares.heightToInt, (req, res, next) => {
   const requestedHeight = req.params.height;
 
   starBlockchain.getLastBlockHeight()
@@ -148,10 +135,7 @@ router.get('/block/:height(\\d+)', mw.heightToInt, (req, res, next) => {
           res.status(200).json(getBlockResponse(decodedBlock));
         });
     })
-    .catch((error) => {
-      res.status(500).json(getErrorResponse(UNKNOWN_ERROR_MSG));
-      next(`ERROR: ${error}`);
-    });
+    .catch(error => next(`ERROR: ${error}`));
 });
 
 module.exports = router;
