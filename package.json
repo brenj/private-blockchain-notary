@@ -4,6 +4,7 @@
   "description": "A private blockchain star registry notarization service.",
   "main": "src/app.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
