@@ -19,18 +19,39 @@ router.post('/requestValidation', (req, res, next) => {
     return;
   }
 
-  const requestTimestamp = moment().format('X');
-  const requestData = { requestTimestamp, requestValidated: false };
+  starRequestData.getStarRequest(address)
+    .then((data) => {
+      if (data !== undefined) {
+        const requestTimestamp = parseInt(data.requestTimestamp, 10);
+        const currentTimestamp = moment().unix();
+        const validationTimeElapsed = currentTimestamp - requestTimestamp;
+        const validationWindow = (
+          config.VALIDATION_WINDOW_SECS - validationTimeElapsed);
 
-  starRequestData.putStarRequest(address, requestData)
-    .then(() => {
-      res.status(200).json({
-        address,
-        requestTimestamp,
-        message: `${address}:${requestTimestamp}:starRegistry`,
-        validationWindow: config.VALIDATION_WINDOW_SECS,
-      });
+        return {
+          address,
+          requestTimestamp,
+          message: `${address}:${requestTimestamp}:starRegistry`,
+          validationWindow: (validationWindow < 0) ? 0 : validationWindow,
+        };
+      }
+
+      // Address does not have active request validation window
+      const requestTimestamp = moment().format('X');
+      const requestData = { requestTimestamp, requestValidated: false };
+      const validationWindow = config.VALIDATION_WINDOW_SECS;
+
+      // Add or Update star request
+      return starRequestData.putStarRequest(address, requestData)
+        .then(() => ({
+          address,
+          requestTimestamp,
+          message: `${address}:${requestTimestamp}:starRegistry`,
+          validationWindow,
+        }))
+        .catch(error => next(`Error: ${error}`));
     })
+    .then(responseData => res.status(200).json(responseData))
     .catch(error => next(`Error: ${error}`));
 });
 

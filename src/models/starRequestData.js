@@ -21,7 +21,10 @@ function putStarRequest(key, value) {
 function getStarRequest(key) {
   return new Promise((resolve, reject) => {
     db.get(key, (error, value) => {
-      if (error) {
+      if (error && error.name === 'NotFoundError') {
+        // App will handle this case
+        resolve(undefined);
+      } else if (error) {
         reject(error);
       } else {
         resolve(JSON.parse(value));
