@@ -20,7 +20,7 @@ This project uses `express` to provide an API to register stars in the universe.
 
 Once validated, a user can then register a star using the `/block` endpoint. The API also contains endpoints for searching by block hash (`/hash:[HASH]`), block address (`/address:[ADDRESS]`), and block height (`/[HEIGHT]`). See the endpoints section below for more details.
 
-Please note that because this project is for learning purposes only, there is no attempt made to validate star data. In the event this was a public facing API, a custom or third-party library would be needed to validate star data before registration. Also, the endpoint names were provided (and required) by Udacity.
+Please note that this project is for learning purposes only, and there is no attempt made to validate star data beyond simply ensuring the required data is present (See [here](https://github.com/brenj/private-blockchain-notary/blob/master/src/helpers/index.js#L6)). In the event this was a public facing API, a custom or third-party library would be needed to validate star data before registration. Also, the endpoint names were provided (and required) by Udacity.
 
 Endpoints
 ---------
@@ -127,7 +127,8 @@ Endpoints
             "star": {
                 "dec": "-26 29 24.9",
                 "ra": "16h 29m 1.0s",
-                "story": "Found star using https://www.google.com/sky/"
+                "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f",
+                "decodedStory": "Found star using https://www.google.com/sky/",
             }
         },
         "height": 1,
@@ -157,7 +158,8 @@ Endpoints
         "star": {
             "dec": "-26° 29' 24.9",
             "ra": "16h 29m 1.0s",
-            "story": "Genesis Block"
+            "story": "47656E6573697320426C6F636B",
+            "decodedStory": "Genesis Block"
         }
     },
     "height": 0,
@@ -185,7 +187,8 @@ Endpoints
         "star": {
             "dec": "-26° 29' 24.9",
             "ra": "16h 29m 1.0s",
-            "story": "Genesis Block"
+            "story": "47656E6573697320426C6F636B",
+            "decodedStory": "Genesis Block"
         }
     },
     "height": 0,
