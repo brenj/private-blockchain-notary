@@ -119,7 +119,7 @@ router.post('/block', (req, res, next) => {
 
   starRequestData.getStarRequest(address)
     .then((data) => {
-      if (!data.requestValidated) {
+      if (!data || !data.requestValidated) {
         res.status(403).json(
           helpers.getErrorResponse('Address not validated to register star'));
         return;
