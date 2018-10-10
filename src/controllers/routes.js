@@ -84,7 +84,7 @@ router.post('/message-signature/validate', (req, res, next) => {
 router.post('/block', (req, res, next) => {
   const { address, star } = req.body;
 
-  if (!address || !star) {
+  if (!address || !helpers.isValidStar(star)) {
     res.status(400).json(helpers.getErrorResponse(
       'Missing required parameters'));
     return;
