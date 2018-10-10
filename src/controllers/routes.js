@@ -128,7 +128,7 @@ router.get('/block/:height(\\d+)', middlewares.heightToInt, (req, res, next) => 
       starBlockchain.getBlock(requestedHeight)
         .then((block) => {
           const decodedBlock = block;
-          decodedBlock.body.star.story = helpers.dehexify(
+          decodedBlock.body.star.decodedStory = helpers.dehexify(
             block.body.star.story);
 
           res.status(200).json(decodedBlock);

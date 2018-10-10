@@ -13,7 +13,7 @@ router.get('/address::address', (req, res, next) => {
       // Decode star story
       const decodedBlocks = blocks.map((block) => {
         const updatedBlock = block;
-        updatedBlock.body.star.story = helpers.dehexify(
+        updatedBlock.body.star.decodedStory = helpers.dehexify(
           block.body.star.story);
         return updatedBlock;
       });
@@ -36,7 +36,8 @@ router.get('/hash::hash', (req, res, next) => {
 
       // Decode star story
       const decodedBlock = block;
-      decodedBlock.body.star.story = helpers.dehexify(block.body.star.story);
+      decodedBlock.body.star.decodedStory = helpers.dehexify(
+        block.body.star.story);
 
       res.status(200).json(decodedBlock);
     })
