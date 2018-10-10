@@ -7,8 +7,8 @@ const keyPair = bitcoin.ECPair.fromWIF('Kxr9tQED9H44gCmp6HAdmemAzU3n84H3dGkuWTKv
 const privateKey = keyPair.d.toBuffer(32)
 const address = '19AAjaTUbRjQCMuVczepkoPswiZRhjtg31'
 
-# Update timestamp to match timestamp received from API
-const message = '19AAjaTUbRjQCMuVczepkoPswiZRhjtg31:1539113592:starRegistry';
+// Update timestamp to match timestamp received from API
+const message = '19AAjaTUbRjQCMuVczepkoPswiZRhjtg31:1539204092:starRegistry';
 const signature = bitcoinMessage.sign(message, privateKey, keyPair.compressed)
 
 console.log(signature.toString('base64'))
