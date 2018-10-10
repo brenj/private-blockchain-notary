@@ -16,6 +16,7 @@ const GENESIS_BLOCK = {
 const MAX_STORY_LENGTH = 500; // bytes
 const PORT = 8000;
 const PRUNE_REQUESTS_TIMEOUT = 900000; // 15 minutes
+const REQUIRED_STAR_PROPS = ['dec', 'ra'];
 const VALIDATION_WINDOW_SECS = 300; // 5 minutes
 
 module.exports = {
@@ -23,5 +24,6 @@ module.exports = {
   MAX_STORY_LENGTH,
   PORT,
   PRUNE_REQUESTS_TIMEOUT,
+  REQUIRED_STAR_PROPS,
   VALIDATION_WINDOW_SECS,
 };
