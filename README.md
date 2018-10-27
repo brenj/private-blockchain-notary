@@ -241,6 +241,6 @@ Grading (by Udacity)
 
 Criteria                             |Highest Grade Possible  |Grade Recieved
 -------------------------------------|------------------------|--------------
-Blockchain ID Validation Routine     |Meets Specifications    |
-Star Registration Endpoint           |Meets Specifications    |
-Star Lookup                          |Meets Specifications    |
+Blockchain ID Validation Routine     |Meets Specifications    |Meets Specifications
+Star Registration Endpoint           |Meets Specifications    |Meets Specifications
+Star Lookup                          |Meets Specifications    |Meets Specifications
